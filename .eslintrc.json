@@ -1,0 +1,39 @@
+{
+  "env": {
+    "commonjs": true,
+    "es2020": true,
+    "mocha": true,
+    "node": true
+  },
+  "extends": ["eslint:recommended", "google", "plugin:prettier/recommended"],
+  "parserOptions": {
+    "ecmaVersion": 11
+  },
+  "plugins": ["mocha"],
+  "rules": {
+    "guard-for-in": "off",
+    "indent": ["error", 2, { "SwitchCase": 1 }],
+    "max-len": [
+      "error",
+      {
+        "code": 100,
+        "comments": 100,
+        "ignoreUrls": true,
+        "ignoreStrings": true,
+        "ignoreTemplateLiterals": true,
+        "ignoreRegExpLiterals": true
+      }
+    ],
+    "object-curly-spacing": ["error", "always"],
+    "operator-linebreak": ["error", "after"],
+    "quotes": [
+      "error",
+      "single",
+      {
+        "avoidEscape": true,
+        "allowTemplateLiterals": true
+      }
+    ],
+    "require-jsdoc": "off"
+  }
+}
