@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Lucas's Chat App</title>
-    <style>
+    <!-- <style>
       body {
         margin: 0;
         padding-bottom: 3rem;
@@ -53,33 +53,43 @@
       #messages > li:nth-child(odd) {
         background: #efefef;
       }
-    </style>
+    </style> -->
   </head>
   <body>
-    <ul id="messages"></ul>
-    <form id="form" action=""><input id="input" autocomplete="off" /><button>Send</button></form>
-    <script src="/socket.io/socket.io.js"></script>
+    <h1>Welcome to Lucas's Chat App</h1>
+    <label for="nickname">Nickname:</label>
+    <input type="text" id="nickname" name="nickname" />
+    <button class="button-join">Join</button>
     <script>
-      var socket = io();
+      const joinButton = document.querySelector('.button-join');
+      joinButton.addEventListener('click', registerUser);
 
-      var messages = document.getElementById('messages');
-      var form = document.getElementById('form');
-      var input = document.getElementById('input');
+      let user;
 
-      form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        if (input.value) {
-          socket.emit('chat message', input.value);
-          input.value = '';
+      // ****************************************
+      async function registerUser(event) {
+        const nickname = document.querySelector('#nickname').value;
+        const url = '/join';
+        const options = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ nickname }),
+        };
+        try {
+          const response = await fetch(url, options);
+          const { result, message } = await response.json();
+          if (!response.ok) {
+            throw new Error(message);
+          }
+          console.log(result);
+          // save user
+          user = result;
+        } catch (error) {
+          console.log(error.message);
         }
-      });
-
-      socket.on('chat message', function (msg) {
-        var item = document.createElement('li');
-        item.textContent = msg;
-        messages.appendChild(item);
-        window.scrollTo(0, document.body.scrollHeight);
-      });
+      }
     </script>
   </body>
 </html>
