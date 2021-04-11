@@ -36,7 +36,8 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });
-  socket.on('chat message', handleMessage);
+  socket.on('chat message', handleChatMessage);
+  socket.on('add user', handleAddUser);
 });
 
 server.listen(3000, () => {
@@ -44,14 +45,18 @@ server.listen(3000, () => {
 });
 
 // **********************************************
-async function handleMessage(message) {
+async function handleChatMessage(nickname, message) {
   if (message.startsWith('/stock')) {
     const [stockCommand, stockCode] = message.split('=');
     console.log(stockCode);
     const stock = await getStock(stockCode);
   } else {
-    io.emit('chat message', message);
+    io.emit('chat message', nickname, message);
   }
+}
+
+function handleAddUser(nickname) {
+  io.emit('add user', `${nickname} has joined the chat!`);
 }
 
 async function getStock(stockCode) {

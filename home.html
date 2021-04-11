@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Lucas's Chat App</title>
-    <!-- <style>
+    <style>
       body {
         margin: 0;
         padding-bottom: 3rem;
@@ -53,13 +53,21 @@
       #messages > li:nth-child(odd) {
         background: #efefef;
       }
-    </style> -->
+    </style>
   </head>
   <body>
     <h1>Welcome to Lucas's Chat App</h1>
-    <label for="nickname">Nickname:</label>
-    <input type="text" id="nickname" name="nickname" />
-    <button class="button-join">Join</button>
+    <div class="register-form">
+      <label for="nickname">Nickname:</label>
+      <input type="text" id="nickname" name="nickname" />
+      <button class="button-join">Join</button>
+    </div>
+    <div class="chat" hidden="true">
+      <ul id="messages"></ul>
+      <form id="form" action=""><input id="input" /><button>Send</button></form>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
     <script>
       const joinButton = document.querySelector('.button-join');
       joinButton.addEventListener('click', registerUser);
@@ -84,11 +92,48 @@
             throw new Error(message);
           }
           console.log(result);
-          // save user
+          // TODO save user in localStorage
           user = result;
+          joinChat(user.nickname);
         } catch (error) {
+          // TODO display error message
           console.log(error.message);
         }
+      }
+
+      function joinChat(nickname) {
+        const chat = document.querySelector('.chat');
+        const registerForm = document.querySelector('.register-form');
+        registerForm.hidden = true;
+        chat.hidden = false;
+        const socket = io();
+        // Sends the server the user nickname
+        socket.emit('add user', nickname);
+        const messages = document.getElementById('messages');
+        const form = document.getElementById('form');
+        const input = document.getElementById('input');
+
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          if (input.value) {
+            socket.emit('chat message', nickname, input.value);
+            input.value = '';
+          }
+        });
+
+        socket.on('chat message', function (nickname, msg) {
+          const item = document.createElement('li');
+          item.textContent = `${nickname}: ${msg}`;
+          messages.appendChild(item);
+          window.scrollTo(0, document.body.scrollHeight);
+        });
+
+        socket.on('add user', function (msg) {
+          const item = document.createElement('li');
+          item.textContent = msg;
+          messages.appendChild(item);
+          window.scrollTo(0, document.body.scrollHeight);
+        });
       }
     </script>
   </body>
