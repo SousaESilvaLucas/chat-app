@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "amqplib": "^0.7.1",
     "axios": "^0.21.1",
     "csv-parse": "^4.15.3",
     "express": "^4.17.1",

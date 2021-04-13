@@ -6,7 +6,6 @@ const io = require('socket.io')(server);
 const axios = require('axios');
 const parse = require('csv-parse/lib/sync');
 
-// app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 const users = [];
