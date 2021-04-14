@@ -7,8 +7,9 @@
 
 **Software:**
 
-- Node (see .nvmrc to see which node version to install)
-- RabbitMQ
+- Node
+- RabbitMQ (I used the docker image)
+- Docker
 
 **Configuration:**
 
@@ -17,19 +18,24 @@
 ### Setting up the APP
 
 ```shell
-git clone git@github.com:
+git clone git@github.com:SousaESilvaLucas/chat-app.git
 cd chat-app/
 npm install # can also use `yarn install`
 ```
 
 ### Running
 
-Once installed you can just run the web server with:
+Once installed make sure to start a RabbitMQ server:
+```shell
+docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+```
+
+Then you can just run the web server with:
 
 ```shell
 node server.js
 ```
-and the task worker with
+and the task worker, as a separate process, with
 ```shell
 node worker.js
 ``` 
