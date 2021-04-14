@@ -1,8 +1,5 @@
 # Lucas's Chat API
 
-
-## Developing
-
 ### Prerequisites
 
 **Software:**
