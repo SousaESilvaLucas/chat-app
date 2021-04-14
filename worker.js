@@ -1,27 +1,25 @@
-var amqp = require('amqplib/callback_api');
+const Queue = require('./components/queue');
+const { stockService } = require('./components/stock');
 
-amqp.connect('amqp://localhost', function (error0, connection) {
-  if (error0) {
-    throw error0;
+runWorker();
+
+// **********************************************
+async function runWorker() {
+  await initializeQueue();
+}
+
+async function initializeQueue() {
+  const requestStockQueue = await Queue.build('amqp://localhost', 'requestStockQueue');
+  requestStockQueue.processQueue(processRequestStock);
+  console.log('Waiting for tasks.');
+}
+
+async function processRequestStock(message) {
+  const { task, params } = JSON.parse(message.content);
+  if (task == 'getStock') {
+    const { stockCode } = params;
+    const stock = await stockService.getStock(stockCode);
+    console.log(stock);
   }
-  connection.createChannel(function (error1, channel) {
-    if (error1) {
-      throw error1;
-    }
-    var queue = 'myQueue';
-
-    channel.assertQueue(queue, {
-      durable: false,
-    });
-    console.log(' [*] Waiting for messages in %s. To exit press CTRL+C', queue);
-    channel.consume(
-      queue,
-      function (msg) {
-        console.log(' [x] Received %s', msg.content.toString());
-      },
-      {
-        noAck: true,
-      },
-    );
-  });
-});
+  const receiveStockQueue = await Queue.build('amqp://localhost', 'receiveStockQueue');
+}

@@ -59,10 +59,18 @@ function handleAddUser(nickname) {
 }
 
 async function getStock(stockCode) {
+  stockCode = stockCode
+    .replace(/(\r\n|\n|\r)/gm, '')
+    .trim()
+    .toLowerCase();
+  console.log('length', stockCode.length);
+  console.log(stockCode == 'aapl.us');
   const options = {
     method: 'get',
+    // url: `https://stooq.com/q/l/?s=${stockCode}&f=sd2t2ohlcv&h&e=csv`,
     url: `https://stooq.com/q/l/?s=${stockCode}&f=sd2t2ohlcv&h&e=csv`,
   };
+  console.log(options);
   const response = await axios(options);
   const stockInfo = response.data;
   const stock = parseStockInfo(stockInfo);
@@ -73,6 +81,7 @@ function parseStockInfo(stockInfo) {
   const [stock] = parse(stockInfo, {
     columns: true,
     skip_empty_lines: true,
+    bom: true,
   });
   return stock;
 }

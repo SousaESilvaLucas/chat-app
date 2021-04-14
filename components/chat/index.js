@@ -1,7 +1,8 @@
 const { stockService } = require('../stock');
 const Queue = require('../queue');
 module.exports = async function initializeChat(server) {
-  const queue = await Queue.build('amqp://localhost', 'myQueue');
+  const requestStockQueue = await Queue.build('amqp://localhost', 'requestStockQueue');
+  const receiveStockQueue = await Queue.build('amqp://localhost', 'receiveStockQueue');
   const io = require('socket.io')(server);
   io.on('connection', (socket) => {
     console.log('a user connected');
@@ -17,7 +18,7 @@ module.exports = async function initializeChat(server) {
     // initializes the queue
     if (message.startsWith('/stock')) {
       const [, stockCode] = message.split('=');
-      await queue.sendMessage(stockCode);
+      await requestStockQueue.sendTask(JSON.stringify({ task: 'getStock', params: { stockCode } }));
       // const stock = await stockService.getStock(stockCode);
     } else {
       io.emit('chat message', nickname, message);

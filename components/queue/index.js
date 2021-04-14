@@ -17,7 +17,7 @@ module.exports = class Queue {
     return new Queue(connection, channel, queueName);
   }
 
-  async sendMessage(message) {
+  async sendTask(message) {
     await this.channel.sendToQueue(this.queue, Buffer.from(message));
   }
 
