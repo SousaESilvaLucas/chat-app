@@ -63,6 +63,7 @@ async function getStock(stockCode) {
     .replace(/(\r\n|\n|\r)/gm, '')
     .trim()
     .toLowerCase();
+  stockCode = JSON.parse(JSON.stringify(stockCode));
   console.log('length', stockCode.length);
   console.log(stockCode == 'aapl.us');
   const options = {

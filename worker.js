@@ -16,10 +16,12 @@ async function initializeQueue() {
 
 async function processRequestStock(message) {
   const { task, params } = JSON.parse(message.content);
+  console.log(`Task ${task} was received.`);
   if (task == 'getStock') {
     const { stockCode } = params;
     const stock = await stockService.getStock(stockCode);
-    console.log(stock);
+
+    const receiveStockQueue = await Queue.build('amqp://localhost', 'receiveStockQueue');
+    receiveStockQueue.sendTask(JSON.stringify({ task: 'receiveStock', params: { stock } }));
   }
-  const receiveStockQueue = await Queue.build('amqp://localhost', 'receiveStockQueue');
 }
