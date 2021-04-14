@@ -4,14 +4,14 @@ const app = express();
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/home.html');
+  res.sendFile(__dirname + '/static/index.html');
 });
 
 app.post('/join', (req, res) => {
   try {
     const users = [];
     const { nickname } = req.body;
-    // saving User in the 'database'
+    // saving User in the 'database'. Not really implemented, just a mock.
     users.push(nickname);
     const id = users.length;
     res.status(201).json({ status: 'ok', result: { id, nickname } });

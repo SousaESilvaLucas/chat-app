@@ -125,6 +125,13 @@
           const item = document.createElement('li');
           item.textContent = `${nickname}: ${msg}`;
           messages.appendChild(item);
+          let listItems = document.querySelectorAll('li');
+          console.log(listItems);
+          while (listItems.length > 50) {
+            const firstLi = listItems[0];
+            firstLi.remove();
+            listItems = document.querySelectorAll('li');
+          }
           window.scrollTo(0, document.body.scrollHeight);
         });
 
